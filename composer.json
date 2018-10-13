@@ -8,7 +8,8 @@
     "require": {
         "ext-openssl": "*",
         "ext-json": "*",
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "phpsess/session-handler": "*"
     },
     "license": "MIT",
     "authors": [

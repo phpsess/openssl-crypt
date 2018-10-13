@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c042ae3f66dc5e85b513bc7ec3b64b4b",
-    "packages": [],
+    "content-hash": "58d244893cc30068d06f40f87e46743b",
+    "packages": [
+        {
+            "name": "phpsess/session-handler",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpsess/session-handler.git",
+                "reference": "fe28f4a956a12dc9a7994881214bcdd71d7144ca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpsess/session-handler/zipball/fe28f4a956a12dc9a7994881214bcdd71d7144ca",
+                "reference": "fe28f4a956a12dc9a7994881214bcdd71d7144ca",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6",
+                "phpmd/phpmd": "^2.6",
+                "phpsess/mock-storage": "dev-master",
+                "phpsess/openssl-encryption": "dev-master",
+                "phpstan/phpstan": "^0.10.3",
+                "phpunit/phpunit": "^7",
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPSess\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ayrton Fidelis",
+                    "email": "ayrton.vargas33@gmail.com"
+                }
+            ],
+            "description": "A security-first PHP session handler",
+            "time": "2018-10-13T21:30:15+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "composer/xdebug-handler",
