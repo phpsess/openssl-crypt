@@ -5,13 +5,22 @@ declare(strict_types=1);
 namespace PHPSess\Encryption;
 
 use PHPSess\Interfaces\EncryptionInterface;
-use PHPSess\Exception\OpenSSLNotLoadedException;
 use PHPSess\Exception\UnableToDecryptException;
 use PHPSess\Exception\UnknownEncryptionAlgorithmException;
 use PHPSess\Exception\UnknownHashAlgorithmException;
 
 class OpenSSLEncryption implements EncryptionInterface
 {
+
+    /**
+     * @var string DEFAULT_HASH_ALGORITHM The default hashing algorithm
+     */
+    public const DEFAULT_HASH_ALGORITHM = 'sha512';
+
+    /**
+     * @var string DEFAULT_ENCRYPTION_ALGORITHM The default encryption algorithm
+     */
+    public const DEFAULT_ENCRYPTION_ALGORITHM = 'aes128';
 
     /**
      * @var string $appKey The hashed app key.
@@ -31,31 +40,12 @@ class OpenSSLEncryption implements EncryptionInterface
     /**
      * EncryptionInterface constructor.
      *
-     * @throws \PHPSess\Exception\OpenSSLNotLoadedException
-     * @throws \PHPSess\Exception\UnknownEncryptionAlgorithmException
-     * @throws \PHPSess\Exception\UnknownHashAlgorithmException
      * @param  string $appKey              Defines the App Key.
-     * @param  string $hashAlgorithm       Defines the algorithm used to create hashes.
-     * @param  string $encryptionAlgorithm Defines the algorithm to encrypt/decrypt data.
      */
-    public function __construct(string $appKey, string $hashAlgorithm = 'sha512', string $encryptionAlgorithm = 'aes128')
+    public function __construct(string $appKey, string $hashAlgorithm = 'sha512', string $encryptionAlgorithm = 'aes186')
     {
-        $this->hashAlgorithm = $hashAlgorithm;
-        $this->encryptionAlgorithm = $encryptionAlgorithm;
-
-        if (!extension_loaded('openssl')) {
-            throw new OpenSSLNotLoadedException();
-        }
-
-        $hashAlgorithms = openssl_get_md_methods(true);
-        if (!in_array($hashAlgorithm, $hashAlgorithms)) {
-            throw new UnknownHashAlgorithmException();
-        }
-
-        $encryptionAlgorithms = openssl_get_cipher_methods(true);
-        if (!in_array($encryptionAlgorithm, $encryptionAlgorithms)) {
-            throw new UnknownEncryptionAlgorithmException();
-        }
+        $this->setHashAlgorithm(self::DEFAULT_HASH_ALGORITHM);
+        $this->setEncryptionAlgorithm(self::DEFAULT_ENCRYPTION_ALGORITHM);
 
         $this->appKey = (string) openssl_digest($appKey, $this->hashAlgorithm);
     }
@@ -138,5 +128,45 @@ class OpenSSLEncryption implements EncryptionInterface
     private function getEncryptionKey(string $sessionId): string
     {
         return (string) openssl_digest($this->appKey . $sessionId, $this->hashAlgorithm);
+    }
+
+    /**
+     * Sets the encryption algorithm
+     *
+     * To get a list of valid algorithms, see openssl_get_cipher_methods(true)
+     *
+     * @throws UnknownEncryptionAlgorithmException
+     * @param string $algorithm
+     * @return void
+     */
+    public function setEncryptionAlgorithm(string $algorithm): void
+    {
+        $knownAlgorithms = openssl_get_cipher_methods(true);
+
+        if (!in_array($algorithm, $knownAlgorithms)) {
+            throw new UnknownEncryptionAlgorithmException();
+        }
+
+        $this->encryptionAlgorithm = $algorithm;
+    }
+
+    /**
+     * Sets the hashing algorithm
+     *
+     * To get a list of valid algorithms, see openssl_get_md_methods(true)
+     *
+     * @throws UnknownHashAlgorithmException
+     * @param string $algorithm
+     * @return void
+     */
+    public function setHashAlgorithm(string $algorithm): void
+    {
+        $knownAlgorithms = openssl_get_md_methods(true);
+
+        if (!in_array($algorithm, $knownAlgorithms)) {
+            throw new UnknownHashAlgorithmException();
+        }
+
+        $this->hashAlgorithm = $algorithm;
     }
 }
