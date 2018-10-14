@@ -42,7 +42,7 @@ class OpenSSLEncryption implements EncryptionInterface
      *
      * @param  string $appKey              Defines the App Key.
      */
-    public function __construct(string $appKey, string $hashAlgorithm = 'sha512', string $encryptionAlgorithm = 'aes186')
+    public function __construct(string $appKey)
     {
         $this->setHashAlgorithm(self::DEFAULT_HASH_ALGORITHM);
         $this->setEncryptionAlgorithm(self::DEFAULT_ENCRYPTION_ALGORITHM);

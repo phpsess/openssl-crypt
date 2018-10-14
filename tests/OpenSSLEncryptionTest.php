@@ -16,16 +16,20 @@ final class OpenSSLEncryptionTest extends TestCase
 
     public function testThrowErrorUnknownHash()
     {
+        $encryption = new OpenSSLEncryption('appKey');
+
         $this->expectException(UnknownHashAlgorithmException::class);
 
-        new OpenSSLEncryption('appKey', 'unknown_hash_algo');
+        $encryption->setHashAlgorithm('unknown_hash_algo');
     }
 
     public function testThrowErrorUnknownEncryption()
     {
+        $encryption = new OpenSSLEncryption('appKey');
+
         $this->expectException(UnknownEncryptionAlgorithmException::class);
 
-        new OpenSSLEncryption('appKey', 'sha512', 'unknown_encryption_algo');
+        $encryption->setEncryptionAlgorithm('unknown_encryption_algo');
     }
 
     public function testIdentifierDifferentFromSid()
