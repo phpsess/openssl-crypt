@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PHPSess\Tests;
 
 use PHPSess\Encryption\OpenSSLEncryption;
-use PHPSess\Exception\UnknownHashAlgorithmException;
-use PHPSess\Exception\UnknownEncryptionAlgorithmException;
+use PHPSess\Exception\UnableToHashException;
+use PHPSess\Exception\UnableToEncryptException;
 use PHPSess\Exception\UnableToDecryptException;
 
 use PHPUnit\Framework\TestCase;
@@ -18,7 +18,7 @@ final class OpenSSLEncryptionTest extends TestCase
     {
         $encryption = new OpenSSLEncryption('appKey');
 
-        $this->expectException(UnknownHashAlgorithmException::class);
+        $this->expectException(UnableToHashException::class);
 
         $encryption->setHashAlgorithm('unknown_hash_algo');
     }
@@ -27,7 +27,7 @@ final class OpenSSLEncryptionTest extends TestCase
     {
         $encryption = new OpenSSLEncryption('appKey');
 
-        $this->expectException(UnknownEncryptionAlgorithmException::class);
+        $this->expectException(UnableToEncryptException::class);
 
         $encryption->setEncryptionAlgorithm('unknown_encryption_algo');
     }

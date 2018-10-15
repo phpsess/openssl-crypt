@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PHPSess\Encryption;
 
-use PHPSess\Interfaces\EncryptionInterface;
+use PHPSess\Exception\UnableToEncryptException;
 use PHPSess\Exception\UnableToDecryptException;
-use PHPSess\Exception\UnknownEncryptionAlgorithmException;
-use PHPSess\Exception\UnknownHashAlgorithmException;
+use PHPSess\Exception\UnableToHashException;
+use PHPSess\Interfaces\EncryptionInterface;
 
 class OpenSSLEncryption implements EncryptionInterface
 {
@@ -135,8 +135,8 @@ class OpenSSLEncryption implements EncryptionInterface
      *
      * To get a list of valid algorithms, see openssl_get_cipher_methods(true)
      *
-     * @throws UnknownEncryptionAlgorithmException
-     * @param string $algorithm
+     * @throws UnableToEncryptException
+     * @param string $algorithm For a list of valid algorithm, see openssl_get_cipher_methods(true).
      * @return void
      */
     public function setEncryptionAlgorithm(string $algorithm): void
@@ -144,7 +144,9 @@ class OpenSSLEncryption implements EncryptionInterface
         $knownAlgorithms = openssl_get_cipher_methods(true);
 
         if (!in_array($algorithm, $knownAlgorithms)) {
-            throw new UnknownEncryptionAlgorithmException();
+            $errorMessage = "The encryption algorithm \"$algorithm\" is unknow. " .
+                'For a list of valid algorithms, see openssl_get_cipher_methods(true).';
+            throw new UnableToEncryptException($errorMessage);
         }
 
         $this->encryptionAlgorithm = $algorithm;
@@ -155,8 +157,8 @@ class OpenSSLEncryption implements EncryptionInterface
      *
      * To get a list of valid algorithms, see openssl_get_md_methods(true)
      *
-     * @throws UnknownHashAlgorithmException
-     * @param string $algorithm
+     * @throws UnableToHashException
+     * @param string $algorithm For a list of valid algorithms, see openssl_get_md_methods(true).
      * @return void
      */
     public function setHashAlgorithm(string $algorithm): void
@@ -164,7 +166,9 @@ class OpenSSLEncryption implements EncryptionInterface
         $knownAlgorithms = openssl_get_md_methods(true);
 
         if (!in_array($algorithm, $knownAlgorithms)) {
-            throw new UnknownHashAlgorithmException();
+            $errorMessage = "The hash algorithm \"$algorithm\" is unknown." .
+                'For a list of valid algorithms, see openssl_get_md_methods(true).';
+            throw new UnableToHashException($errorMessage);
         }
 
         $this->hashAlgorithm = $algorithm;
